@@ -64,9 +64,9 @@ always @(write_mask)
         default:
         begin
             enables_expand = {COLS{1'b0}};
-            for (i=0; i<; i=i+1)
+            for (i=0; i<WR_MASK_WIDTH; i=i+1)
             begin
-                for (j=0; j<; j=j+1)
+                for (j=0; j<WR_MASK_TYPE; j=j+1)
                     enables_expand = enables_expand | write_mask[i] << (i * WR_MASK_TYPE + j);
             end
         end
@@ -135,7 +135,7 @@ always @ (posedge clk) begin
     if (chip_select_dly & write_dly & ~global_reset & ~forcex)
     begin
         data_tmp = memory[addr_dly];
-        for (i=0; i<; i=i+1)
+        for (i=0; i<COLS; i=i+1)
         begin
             if (enables_dly[i])
                 data_tmp[i] = data_in_dly[i];
@@ -149,12 +149,12 @@ end
 always @(forcex)
     if (forcex)
     begin
-        for (i=0; i<; i=i+1)
+        for (i=0; i<COLS; i=i+1)
         begin
             data_tmp[i] = 1'bx;
         end
 
-        for (i=0; i<; i=i+1)
+        for (i=0; i<ROWS; i=i+1)
         begin
             memory[i] = data_tmp;
         end
